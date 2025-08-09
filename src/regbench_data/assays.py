@@ -3,7 +3,7 @@ from .utils import OsfObject
 
 def get_CAGE(name: str) -> list[Path]:
     registy = {
-        "K562" [
+        "K562": [
             OsfObject(
                 id="54278",
                 name="K562_+.w5z",

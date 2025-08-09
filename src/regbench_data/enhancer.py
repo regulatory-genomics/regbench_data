@@ -108,7 +108,7 @@ class Dataset:
 
         return Dataset(metadata['id'], results)
 
-def Gasperini2019(p_value: float | None = None):
+def Gasperini2019(p_value: float | None = None) -> Dataset:
     """ Returns the Gasperini2019 dataset.
     """
     metadata = OsfObject(
@@ -124,7 +124,7 @@ def Gasperini2019(p_value: float | None = None):
     ]
     return Dataset.from_osf(metadata, data, p_value=p_value)
 
-def Nasser2021(p_value: float | None = None):
+def Nasser2021(p_value: float | None = None) -> Dataset:
     """ Returns the Nasser_2021_Nature dataset.
     """
     metadata = OsfObject(
@@ -140,7 +140,7 @@ def Nasser2021(p_value: float | None = None):
     ]
     return Dataset.from_osf(metadata, data, p_value=p_value)
 
-def Schraivogel2020(p_value: float | None = None):
+def Schraivogel2020(p_value: float | None = None) -> Dataset:
     """ Returns the Schraivogel2020 dataset. 
     """
     metadata = OsfObject(
