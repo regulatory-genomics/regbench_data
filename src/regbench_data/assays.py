@@ -19,4 +19,4 @@ def get_CAGE(name: str) -> list[Path]:
 
     if name not in registy:
         raise ValueError(f"Unknown CAGE dataset: {name}")
-    return registy[name].fetch()
+    return [x.fetch(cache_dir=None) for x in registy[name]]

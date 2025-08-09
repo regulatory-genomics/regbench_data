@@ -23,19 +23,20 @@ class OsfObject:
     def __post_init__(self):
         self.url = f"https://osf.io/download/{self.id}"
 
-    def fetch(self, path: Path | None = None) -> Path:
+    def fetch(self, cache_dir: Path | None = None) -> Path:
         """ Fetches the OSF object and returns the local path to the downloaded file.
 
         Parameters
         ----------
-        path : Path | None, optional
-            The directory where the file should be downloaded. If None, the default
-            download directory is used.
+        cache_dir: Path | None, optional
+            The location of the cache folder on disk. This is where the file will be saved.
+            If None, will save to a folder in the default cache location for your
+            operating system (see pooch.os_cache).
         """
         return pooch.retrieve(
             self.url,
             known_hash=self.hash,
             fname=self.name,
-            path=path,
+            path=cache_dir,
             progressbar=True,
         )
