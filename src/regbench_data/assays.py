@@ -1,7 +1,7 @@
 from pathlib import Path
 from .utils import OsfObject
 
-def get_CAGE(name: str) -> list[Path]:
+def fetch_cage(name: str) -> list[Path]:
     registy = {
         "K562": [
             OsfObject(
