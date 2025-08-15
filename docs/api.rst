@@ -13,7 +13,7 @@ Assay data
 .. autosummary::
     :toctree: _autosummary
 
-    assay.fetch_cage
+    assays.fetch_cage
 
 Enhancer data
 ~~~~~~~~~~~~~
