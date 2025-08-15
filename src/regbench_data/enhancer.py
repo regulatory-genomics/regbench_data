@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from .utils import OsfObject
 
+
 @dataclass
 class ScreeningResult:
     """ Represents a screening result from a dataset.
@@ -20,6 +21,16 @@ class ScreeningResult:
         The genome assembly used for the sample.
     result : pl.DataFrame
         The results of the screening, loaded as a Polars DataFrame.
+        It contains the following columns:
+            - chrom: str
+            - chrom_start: int
+            - chrom_end: int
+            - gene_symbol: str
+            - gene_chrom: str
+            - gene_TSS: int
+            - label: str (categorical, e.g., '0' for non-significant and '1' for significant)
+            - effect_size: float | None
+            - adjusted_p_value: float | None
     """
     sample_term_id: str
     sample_name: str
@@ -66,6 +77,35 @@ class ScreeningResult:
                 .alias('label')
             )
         self.result = df
+
+def concatenate(results: list[ScreeningResult]) -> ScreeningResult:
+    """ Concatenates multiple ScreeningResult objects into a single one.
+
+    The sample_term_id, sample_name and assembly must be the same for all results.
+
+    Parameters
+    ----------
+    results : list[ScreeningResult]
+        The list of ScreeningResult objects to concatenate.
+
+    Returns
+    -------
+    ScreeningResult
+        A new ScreeningResult object containing the concatenated results.
+    """
+    assert len(results) > 0, "No results to concatenate"
+    sample_term_id = results[0].sample_term_id
+    sample_name = results[0].sample_name
+    assembly = results[0].assembly
+    for r in results:
+        if r.sample_term_id != sample_term_id:
+            raise ValueError("All results must have the same sample_term_id")
+        if r.sample_name != sample_name:
+            raise ValueError("All results must have the same sample_name")
+        if r.assembly != assembly:
+            raise ValueError("All results must have the same assembly")
+    concatenated_df = pl.concat([r.result for r in results], how='vertical')
+    return ScreeningResult(sample_term_id, sample_name, assembly, concatenated_df)
 
 @dataclass
 class Dataset:

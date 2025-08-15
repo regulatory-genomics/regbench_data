@@ -1,8 +1,9 @@
 from pathlib import Path
 import pooch
-from .utils import OsfObject
 
 def fetch_genome_fasta(name: str) -> Path:
+    """ Fetches the genome FASTA file for the specified genome assembly.
+    """
     registy = {
         "GRCh38": (
             'gencode_v41_GRCh38.fa.gz',
@@ -24,6 +25,8 @@ def fetch_genome_fasta(name: str) -> Path:
     )
 
 def fetch_genome_annotation(name: str) -> Path:
+    """ Fetches the genome annotation file for the specified genome assembly.
+    """
     registy = {
         "GRCh38": (
             'gencode_v41_GRCh38.gff3.gz',
