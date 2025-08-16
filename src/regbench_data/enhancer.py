@@ -9,7 +9,7 @@ from .utils import OsfObject
 
 @dataclass
 class ScreeningResult:
-    """ Represents a screening result from a dataset.
+    """Represents a screening result from a dataset.
 
     Attributes
     ----------
@@ -32,6 +32,7 @@ class ScreeningResult:
             - effect_size: float | None
             - adjusted_p_value: float | None
     """
+
     sample_term_id: str
     sample_name: str
     assembly: str
@@ -41,10 +42,16 @@ class ScreeningResult:
         return len(self.result)
 
     def label_counts(self) -> dict[str, int]:
-        return self.result['label'].value_counts().sort('label')
+        return self.result["label"].value_counts().sort("label")
+    
+    def distance_to_tss(self) -> pl.Series:
+        """Calculates the distance from the enhancer center to the gene TSS."""
+        return ((self.result["chrom_start"] + self.result["chrom_end"]) / 2 - self.result["gene_TSS"]).abs()
 
-    def load_osf(self, object: OsfObject, p_value: float | None = None) -> "ScreeningResult":
-        """ Loads the screening results from an OSF object.
+    def load_osf(
+        self, object: OsfObject, p_value: float | None = None
+    ) -> "ScreeningResult":
+        """Loads the screening results from an OSF object.
 
         Parameters
         ----------
@@ -56,43 +63,53 @@ class ScreeningResult:
         """
         df = pl.read_csv(
             object.fetch(),
-            separator='\t',
+            separator="\t",
             schema_overrides={
-                'chrom': pl.String,
-                'chrom_start': pl.UInt64,
-                'chrom_end': pl.UInt64,
-                'gene_symbol': pl.String,
-                'gene_chrom': pl.String,
-                'gene_TSS': pl.UInt64,
-                'label': pl.Categorical,
+                "chrom": pl.String,
+                "chrom_start": pl.UInt64,
+                "chrom_end": pl.UInt64,
+                "gene_symbol": pl.String,
+                "gene_chrom": pl.String,
+                "gene_TSS": pl.UInt64,
+                "label": pl.Categorical,
             },
-            null_values={'effect_size': 'NA', 'adjusted_p_value': 'NA'},
+            null_values={"effect_size": "NA", "adjusted_p_value": "NA"},
         )
         if p_value is not None:
             df = df.with_columns(
-                pl.when(pl.col('adjusted_p_value') <= p_value)
+                pl.when(pl.col("adjusted_p_value") <= p_value)
                 .then(1)
                 .otherwise(0)
                 .cast(pl.Categorical)
-                .alias('label')
+                .alias("label")
             )
         self.result = df
 
-def concatenate(results: list[ScreeningResult]) -> ScreeningResult:
-    """ Concatenates multiple ScreeningResult objects into a single one.
+
+def concatenate(
+    results: list[ScreeningResult] | dict[str, ScreeningResult],
+) -> ScreeningResult:
+    """Concatenates multiple ScreeningResult objects into a single one.
 
     The sample_term_id, sample_name and assembly must be the same for all results.
 
     Parameters
     ----------
-    results : list[ScreeningResult]
+    results
         The list of ScreeningResult objects to concatenate.
+        If a dictionary is provided, the values are used and the keys are added
+        as a new column 'source' in the resulting DataFrame.
 
     Returns
     -------
     ScreeningResult
         A new ScreeningResult object containing the concatenated results.
     """
+    if isinstance(results, dict):
+        for key, r in results.items():
+            r.result = r.result.with_columns(pl.lit(key).alias("source"))
+        results = list(results.values())
+
     assert len(results) > 0, "No results to concatenate"
     sample_term_id = results[0].sample_term_id
     sample_name = results[0].sample_name
@@ -104,12 +121,13 @@ def concatenate(results: list[ScreeningResult]) -> ScreeningResult:
             raise ValueError("All results must have the same sample_name")
         if r.assembly != assembly:
             raise ValueError("All results must have the same assembly")
-    concatenated_df = pl.concat([r.result for r in results], how='vertical')
+    concatenated_df = pl.concat([r.result for r in results], how="vertical")
     return ScreeningResult(sample_term_id, sample_name, assembly, concatenated_df)
+
 
 @dataclass
 class Dataset:
-    """ Represents a dataset containing screening results.
+    """Represents a dataset containing screening results.
 
     Attributes
     ----------
@@ -118,6 +136,7 @@ class Dataset:
     results : list[ScreeningResult]
         A list of screening results contained in the dataset.
     """
+
     id: str
     results: list[ScreeningResult]
 
@@ -128,29 +147,29 @@ class Dataset:
         data: list[OsfObject],
         p_value: float | None = None,
     ) -> "Dataset":
-        with open(metadata.fetch(), 'r') as f:
+        with open(metadata.fetch(), "r") as f:
             metadata = yaml.safe_load(f)
-        
-        files = {x['file']: x for x in metadata['data']}
+
+        files = {x["file"]: x for x in metadata["data"]}
         results = []
         for d in data:
             info = files.get(d.name)
             if info is None:
                 raise ValueError(f"File {d.name} not found in metadata")
             res = ScreeningResult(
-                info['sample_term_id'],
-                info['sample_name'],
-                info['assembly'],
+                info["sample_term_id"],
+                info["sample_name"],
+                info["assembly"],
                 None,
             )
             res.load_osf(d, p_value=p_value)
             results.append(res)
 
-        return Dataset(metadata['id'], results)
+        return Dataset(metadata["id"], results)
+
 
 def Gasperini2019(p_value: float | None = None) -> Dataset:
-    """ Returns the Gasperini2019 dataset.
-    """
+    """Returns the Gasperini2019 dataset."""
     metadata = OsfObject(
         id="3fyt9",
         name="Gasperini2019_metadata.yaml",
@@ -164,9 +183,9 @@ def Gasperini2019(p_value: float | None = None) -> Dataset:
     ]
     return Dataset.from_osf(metadata, data, p_value=p_value)
 
+
 def Nasser2021(p_value: float | None = None) -> Dataset:
-    """ Returns the Nasser_2021_Nature dataset.
-    """
+    """Returns the Nasser_2021_Nature dataset."""
     metadata = OsfObject(
         id="k9t6e",
         name="Nasser2021_metadata.yaml",
@@ -180,9 +199,9 @@ def Nasser2021(p_value: float | None = None) -> Dataset:
     ]
     return Dataset.from_osf(metadata, data, p_value=p_value)
 
+
 def Schraivogel2020(p_value: float | None = None) -> Dataset:
-    """ Returns the Schraivogel2020 dataset. 
-    """
+    """Returns the Schraivogel2020 dataset."""
     metadata = OsfObject(
         id="t7jxr",
         name="Schraivogel2020_metadata.yaml",
@@ -196,9 +215,10 @@ def Schraivogel2020(p_value: float | None = None) -> Dataset:
     ]
     return Dataset.from_osf(metadata, data, p_value=p_value)
 
+
 def retrieve_datasets(p_value: float | None = None) -> dict[str, Dataset]:
-    """ Retrieves all datasets.
-    
+    """Retrieves all datasets.
+
     Returns
     -------
     dict[str, Dataset]
@@ -213,6 +233,7 @@ def retrieve_datasets(p_value: float | None = None) -> dict[str, Dataset]:
         raise ValueError("Dataset IDs must be unique")
 
     return {d.id: d for d in datasets}
+
 
 if __name__ == "__main__":
     datasets = retrieve_datasets()
