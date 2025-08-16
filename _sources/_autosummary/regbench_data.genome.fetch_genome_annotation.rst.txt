@@ -1,0 +1,6 @@
+﻿regbench\_data.genome.fetch\_genome\_annotation
+===============================================
+
+.. currentmodule:: regbench_data.genome
+
+.. autofunction:: fetch_genome_annotation

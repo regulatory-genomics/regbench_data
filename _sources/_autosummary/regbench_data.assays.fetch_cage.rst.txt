@@ -1,0 +1,6 @@
+﻿regbench\_data.assays.fetch\_cage
+=================================
+
+.. currentmodule:: regbench_data.assays
+
+.. autofunction:: fetch_cage
