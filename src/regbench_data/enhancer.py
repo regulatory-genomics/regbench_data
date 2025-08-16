@@ -87,7 +87,7 @@ class ScreeningResult:
 
 
 def concatenate(
-    results: list[ScreeningResult] | dict[str, ScreeningResult],
+    results: list[ScreeningResult] | list[tuple[str, ScreeningResult]],
 ) -> ScreeningResult:
     """Concatenates multiple ScreeningResult objects into a single one.
 
@@ -97,7 +97,7 @@ def concatenate(
     ----------
     results
         The list of ScreeningResult objects to concatenate.
-        If a dictionary is provided, the values are used and the keys are added
+        Each object can optionally be associated with a string key. The keys are added
         as a new column 'source' in the resulting DataFrame.
 
     Returns
@@ -105,12 +105,13 @@ def concatenate(
     ScreeningResult
         A new ScreeningResult object containing the concatenated results.
     """
-    if isinstance(results, dict):
-        for key, r in results.items():
-            r.result = r.result.with_columns(pl.lit(key).alias("source"))
-        results = list(results.values())
-
     assert len(results) > 0, "No results to concatenate"
+
+    if isinstance(results[0], tuple):
+        for key, r in results:
+            r.result = r.result.with_columns(pl.lit(key).alias("source"))
+        results = [r for _, r in results]
+
     sample_term_id = results[0].sample_term_id
     sample_name = results[0].sample_name
     assembly = results[0].assembly
