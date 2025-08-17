@@ -71,7 +71,7 @@ class ScreeningResult:
                 "gene_symbol": pl.String,
                 "gene_chrom": pl.String,
                 "gene_TSS": pl.UInt64,
-                "label": pl.Categorical,
+                "label": pl.Int64,
             },
             null_values={"effect_size": "NA", "adjusted_p_value": "NA"},
         )
@@ -80,7 +80,7 @@ class ScreeningResult:
                 pl.when(pl.col("adjusted_p_value") <= p_value)
                 .then(1)
                 .otherwise(0)
-                .cast(pl.Categorical)
+                .cast(pl.Int64)
                 .alias("label")
             )
         self.result = df
