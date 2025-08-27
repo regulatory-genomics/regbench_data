@@ -1,22 +1,85 @@
 from pathlib import Path
-from .utils import OsfObject
 
-def fetch_cage(name: str) -> list[Path]:
-    registy = {
-        "K562": [
-            OsfObject(
-                id="54278",
-                name="K562_+.w5z",
-                hash="sha256:301e52eb63aff6ec442d7d81fcd13f2a3ee19def735ec5e5662b3a3c396cf000",
-            ),
-            OsfObject(
-                id="mh6ka",
-                name="K562_-.w5z",
-                hash="sha256:00185eeb469bae9acde78113013e547cfd7951aee5d635fa87c70e35c4116356",
-            ),
-        ],
+from regbench_data import POOCH
+
+CAGE_DATA = {
+    'K562': {
+        'plus': 'CAGE_K562_+.w5z',
+        'minus': 'CAGE_K562_-.w5z',
     }
+}
 
-    if name not in registy:
-        raise ValueError(f"Unknown CAGE dataset: {name}")
-    return [x.fetch(cache_dir=None) for x in registy[name]]
+def list_cage() -> list[str]:
+    """Lists all available datasets."""
+    return list(CAGE_DATA.keys())
+
+def retrieve_cage(
+    id: str | list[str],
+) -> dict[str, tuple[Path, Path]]:
+    """Retrieves all datasets.
+
+    Parameters
+    ----------
+    id : str | list[str]
+        The ID or list of IDs of the datasets to retrieve.
+
+    Returns
+    -------
+    dict[str, Dataset]
+        A dictionary mapping dataset IDs to Dataset objects.
+    """
+
+    if isinstance(id, str):
+        id = [id]
+
+    datasets = {}
+    for dataset_id in id:
+        if dataset_id not in CAGE_DATA:
+            raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list()}")
+        dataset = CAGE_DATA[dataset_id]
+        datasets[dataset_id] = (
+            Path(POOCH.fetch(dataset['plus'], progressbar=True)),
+            Path(POOCH.fetch(dataset['minus'], progressbar=True))
+        )
+    return datasets
+
+RNA_DATA = {
+    'adipose_Subcutaneous': {
+        'plus': 'total_RNA_seq_subcutaneous_adipose_tissue_+.w5z',
+        'minus': 'total_RNA_seq_subcutaneous_adipose_tissue_-.w5z',
+    }
+}
+
+def list_rna() -> list[str]:
+    """Lists all available datasets."""
+    return list(RNA_DATA.keys())
+
+def retrieve_rna(
+    id: str | list[str],
+) -> dict[str, tuple[Path, Path]]:
+    """Retrieves all datasets.
+
+    Parameters
+    ----------
+    id : str | list[str]
+        The ID or list of IDs of the datasets to retrieve.
+
+    Returns
+    -------
+    dict[str, Dataset]
+        A dictionary mapping dataset IDs to Dataset objects.
+    """
+
+    if isinstance(id, str):
+        id = [id]
+
+    datasets = {}
+    for dataset_id in id:
+        if dataset_id not in RNA_DATA:
+            raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list()}")
+        dataset = RNA_DATA[dataset_id]
+        datasets[dataset_id] = (
+            Path(POOCH.fetch(dataset['plus'], progressbar=True)),
+            Path(POOCH.fetch(dataset['minus'], progressbar=True))
+        )
+    return datasets

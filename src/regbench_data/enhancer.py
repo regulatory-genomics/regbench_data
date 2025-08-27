@@ -1,11 +1,70 @@
 from pathlib import Path
 import polars as pl
 import yaml
-import pooch
 from dataclasses import dataclass
 
-from .utils import OsfObject
+from regbench_data import POOCH
 
+ENHANCER_DATA = {
+    'Gasperini2019': {
+        'metadata_file': 'Gasperini_2019_Cell_metadata.yaml',
+        'data': [
+            {'name': 'Gasperini2019.tsv.gz', 'data_file': 'Gasperini_2019_Cell_Gasperini2019.tsv.gz'}
+        ]
+    },
+    'Nasser2021': {
+        'metadata_file': 'Nasser_2021_Nature_metadata.yaml',
+        'data': [
+            {'name': 'Nasser2021.tsv.gz', 'data_file': 'Nasser_2021_Nature_Nasser2021.tsv.gz'}
+        ]
+    },
+    'Schraivogel2020': {
+        'metadata_file': 'Schraivogel_2020_NatMethods_metadata.yaml',
+        'data': [
+            {'name': 'Schraivogel2020.tsv.gz', 'data_file': 'Schraivogel_2020_NatMethods_Schraivogel2020.tsv.gz'}
+        ] 
+    }
+}
+
+def list_enhancer() -> list[str]:
+    """Lists all available datasets."""
+    return list(ENHANCER_DATA.keys())
+
+def retrieve_enhancer(
+    id: str | list[str] | None = None,
+    p_value: float | None = None
+) -> dict[str, 'Dataset']:
+    """Retrieves all datasets.
+
+    Parameters
+    ----------
+    id : str | list[str] | None, optional
+        The ID or list of IDs of the datasets to retrieve. If None, retrieves all datasets.
+    p_value : float | None, optional
+        If provided, modify the 'label' column in each ScreeningResult based on the adjusted p-value.
+        Otherwise, the 'label' column is left unchanged.
+
+    Returns
+    -------
+    dict[str, Dataset]
+        A dictionary mapping dataset IDs to Dataset objects.
+    """
+
+    if id is None:
+        id = list_enhancer()
+    elif isinstance(id, str):
+        id = [id]
+
+    datasets = {}
+    for dataset_id in id:
+        if dataset_id not in ENHANCER_DATA:
+            raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list_enhancer()}")
+        dataset = ENHANCER_DATA[dataset_id]
+        metadata = POOCH.fetch(dataset['metadata_file'])
+        for d in dataset['data']:
+            data = [(d['name'], POOCH.fetch(d['data_file'], progressbar=True))]
+            datasets[dataset_id] = Dataset.load(metadata, data, p_value=p_value)
+    return datasets
 
 @dataclass
 class ScreeningResult:
@@ -48,8 +107,8 @@ class ScreeningResult:
         """Calculates the distance from the enhancer center to the gene TSS."""
         return ((self.result["chrom_start"] + self.result["chrom_end"]) / 2 - self.result["gene_TSS"]).abs()
 
-    def load_osf(
-        self, object: OsfObject, p_value: float | None = None
+    def load_data(
+        self, csv: Path, p_value: float | None = None
     ) -> "ScreeningResult":
         """Loads the screening results from an OSF object.
 
@@ -62,7 +121,7 @@ class ScreeningResult:
             Otherwise, the 'label' column is left unchanged.
         """
         df = pl.read_csv(
-            object.fetch(),
+            csv,
             separator="\t",
             schema_overrides={
                 "chrom": pl.String,
@@ -142,102 +201,34 @@ class Dataset:
     results: list[ScreeningResult]
 
     @classmethod
-    def from_osf(
+    def load(
         cls,
-        metadata: OsfObject,
-        data: list[OsfObject],
+        metadata: Path,
+        data: list[tuple[str, Path]],
         p_value: float | None = None,
     ) -> "Dataset":
-        with open(metadata.fetch(), "r") as f:
+        with open(metadata, "r") as f:
             metadata = yaml.safe_load(f)
 
         files = {x["file"]: x for x in metadata["data"]}
         results = []
-        for d in data:
-            info = files.get(d.name)
+        for filename, d in data:
+            info = files.get(filename)
             if info is None:
-                raise ValueError(f"File {d.name} not found in metadata")
+                raise ValueError(f"File {filename} not found in metadata")
             res = ScreeningResult(
                 info["sample_term_id"],
                 info["sample_name"],
                 info["assembly"],
                 None,
             )
-            res.load_osf(d, p_value=p_value)
+            res.load_data(d, p_value=p_value)
             results.append(res)
 
         return Dataset(metadata["id"], results)
 
-
-def Gasperini2019(p_value: float | None = None) -> Dataset:
-    """Returns the Gasperini2019 dataset."""
-    metadata = OsfObject(
-        id="3fyt9",
-        name="Gasperini2019_metadata.yaml",
-    )
-    data = [
-        OsfObject(
-            id="sfxyz",
-            name="Gasperini2019.tsv.gz",
-            hash="sha256:2f035014a12d84551d07ec1693d503fe5fc4ac69a51f70ad8ee47fb4eee6ab86",
-        ),
-    ]
-    return Dataset.from_osf(metadata, data, p_value=p_value)
-
-
-def Nasser2021(p_value: float | None = None) -> Dataset:
-    """Returns the Nasser_2021_Nature dataset."""
-    metadata = OsfObject(
-        id="k9t6e",
-        name="Nasser2021_metadata.yaml",
-    )
-    data = [
-        OsfObject(
-            id="n8r27",
-            name="Nasser2021.tsv.gz",
-            hash="sha256:1993eec179a4e49a310d29fbe4072397a2355ad27f6849f3156cb5631fd06392",
-        ),
-    ]
-    return Dataset.from_osf(metadata, data, p_value=p_value)
-
-
-def Schraivogel2020(p_value: float | None = None) -> Dataset:
-    """Returns the Schraivogel2020 dataset."""
-    metadata = OsfObject(
-        id="t7jxr",
-        name="Schraivogel2020_metadata.yaml",
-    )
-    data = [
-        OsfObject(
-            id="2eadx",
-            name="Schraivogel2020.tsv.gz",
-            hash="sha256:ae77e47588c489d6f5ebea561a8218b7d25fed0b7c6a55f593432865a3132673",
-        ),
-    ]
-    return Dataset.from_osf(metadata, data, p_value=p_value)
-
-
-def retrieve_datasets(p_value: float | None = None) -> dict[str, Dataset]:
-    """Retrieves all datasets.
-
-    Returns
-    -------
-    dict[str, Dataset]
-        A dictionary mapping dataset IDs to Dataset objects.
-    """
-    datasets = [
-        Gasperini2019(p_value=p_value),
-        Nasser2021(p_value=p_value),
-        Schraivogel2020(p_value=p_value),
-    ]
-    if len(set(d.id for d in datasets)) != len(datasets):
-        raise ValueError("Dataset IDs must be unique")
-
-    return {d.id: d for d in datasets}
-
-
 if __name__ == "__main__":
-    datasets = retrieve_datasets()
+    datasets = retrieve_enhancer()
     for id, dataset in datasets.items():
         print(f"Dataset ID: {id}, Number of Results: {len(dataset.results)}")
         for result in dataset.results:

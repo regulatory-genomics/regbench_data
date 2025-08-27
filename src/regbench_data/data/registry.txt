@@ -1,0 +1,18 @@
+# Enhancer
+Gasperini_2019_Cell_Gasperini2019.tsv.gz sha256:2f035014a12d84551d07ec1693d503fe5fc4ac69a51f70ad8ee47fb4eee6ab86 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Gasperini_2019_Cell/Gasperini2019.tsv.gz
+Gasperini_2019_Cell_metadata.yaml sha256:254c4dc26eac474b8e285f494be197966bb66fa476a55a7840337d7257c27d67 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Gasperini_2019_Cell/metadata.yaml
+Nasser_2021_Nature_Nasser2021.tsv.gz sha256:1993eec179a4e49a310d29fbe4072397a2355ad27f6849f3156cb5631fd06392 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Nasser_2021_Nature/Nasser2021.tsv.gz
+Nasser_2021_Nature_metadata.yaml sha256:591d0a1acabd63370321886de512cc9a3d34e13d7d677590e74af7d1728a14e0 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Nasser_2021_Nature/metadata.yaml
+Schraivogel_2020_NatMethods_Schraivogel2020.tsv.gz sha256:ae77e47588c489d6f5ebea561a8218b7d25fed0b7c6a55f593432865a3132673 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Schraivogel_2020_NatMethods/Schraivogel2020.tsv.gz
+Schraivogel_2020_NatMethods_metadata.yaml sha256:92e3ec12d9e530981afd9e23177b5e58d2c4d0704c95ff70ea1773886c912930 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/Enhancer/Schraivogel_2020_NatMethods/metadata.yaml
+
+# CAGE
+CAGE_K562_+.w5z sha256:301e52eb63aff6ec442d7d81fcd13f2a3ee19def735ec5e5662b3a3c396cf000 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/CAGE/K562_%2B.w5z
+CAGE_K562_-.w5z sha256:00185eeb469bae9acde78113013e547cfd7951aee5d635fa87c70e35c4116356 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/CAGE/K562_-.w5z
+
+# total-RNA-seq
+total_RNA_seq_subcutaneous_adipose_tissue_+.w5z sha256:f0b440db78b1f5198a9ae5d95d3c3cc786ce741540a992bc060e863ff4c94d27 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/total_RNA_seq/subcutaneous_adipose_tissue_%2B.w5z
+total_RNA_seq_subcutaneous_adipose_tissue_-.w5z sha256:307952833e6a27ba788fe4fadac44e2e4783805aade2dbb0a708ec93b5018d18 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/total_RNA_seq/subcutaneous_adipose_tissue_-.w5z
+
+# eQTL
+GTEx_v10_SuSiE_eQTL_Adipose_Subcutaneous.v10.eQTLs.SuSiE_summary.parquet sha256:3128a6637cc66af75d591ec152371b66f05cbcf5e7a339a27ec9c1ee272d9561 https://www.modelscope.ai/models/regulatory-genomics-lab/regbench-data/resolve/master/eQTL/GTEx_v10_SuSiE_eQTL/Adipose_Subcutaneous.v10.eQTLs.SuSiE_summary.parquet

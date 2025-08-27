@@ -1,11 +1,11 @@
 [project]
 name = "regbench-data"
-version = "0.1.0"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "polars>=1.32",
+    "polars>=1.0",
     "pooch>=1.8",
     "pyyaml>=6.0",
     "tqdm>=4.67",
@@ -15,6 +15,19 @@ dependencies = [
 requires = ["setuptools>=70.0.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["regbench_data*"]
+
+[tool.setuptools.package-data]
+genomics_models = ["data/registry.txt"]
+
 [[tool.uv.index]]
-url = "https://mirrors.westlake.edu.cn/pypi/simple"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true

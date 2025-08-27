@@ -13,7 +13,10 @@ Assay data
 .. autosummary::
     :toctree: _autosummary
 
-    assays.fetch_cage
+    assays.list_cage
+    assays.retrieve_cage
+    assays.list_rna
+    assays.retrieve_rna
 
 Enhancer data
 ~~~~~~~~~~~~~
@@ -24,10 +27,17 @@ Enhancer data
     enhancer.Dataset
     enhancer.ScreeningResult
     enhancer.concatenate
-    enhancer.retrieve_datasets
-    enhancer.Gasperini2019
-    enhancer.Nasser2021
-    enhancer.Schraivogel2020
+    enhancer.list_enhancer
+    enhancer.retrieve_enhancer
+
+eQTL data
+~~~~~~~~~
+
+.. autosummary::
+    :toctree: _autosummary
+
+    eqtl.list_eqtl
+    eqtl.retrieve_eqtl
 
 Genome data
 ~~~~~~~~~~~
