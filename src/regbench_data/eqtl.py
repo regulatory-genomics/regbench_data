@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from regbench_data import POOCH
 
 EQTL_DATA = {
-    'adipose_Subcutaneous': 'GTEx_v10_SuSiE_eQTL_Adipose_Subcutaneous.v10.eQTLs.SuSiE_summary.parquet',
+    'adipose_subcutaneous': 'GTEx_v10_SuSiE_eQTL_Adipose_Subcutaneous.v10.eQTLs.SuSiE_summary.parquet',
 }
 
 def list_eqtl() -> list[str]:
@@ -54,5 +54,6 @@ def retrieve_eqtl(
 if __name__ == "__main__":
     datasets = list_eqtl()
     print(datasets)
-    datasets = retrieve_eqtl(datasets[0])
-    print(datasets)
+    datasets = list(retrieve_eqtl(datasets[0]).values())[0]
+    for gr in datasets.group_by('gene_name'):
+        print(gr)
