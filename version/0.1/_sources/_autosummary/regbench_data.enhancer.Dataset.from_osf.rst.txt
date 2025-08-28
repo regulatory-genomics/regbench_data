@@ -1,0 +1,6 @@
+regbench\_data.enhancer.Dataset.from\_osf
+=========================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. automethod:: Dataset.from_osf

@@ -1,0 +1,6 @@
+regbench\_data.enhancer.ScreeningResult.label\_counts
+=====================================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. automethod:: ScreeningResult.label_counts

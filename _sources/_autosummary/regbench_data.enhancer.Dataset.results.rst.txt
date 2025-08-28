@@ -1,0 +1,6 @@
+regbench\_data.enhancer.Dataset.results
+=======================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autoattribute:: Dataset.results

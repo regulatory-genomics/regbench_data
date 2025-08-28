@@ -1,0 +1,6 @@
+﻿regbench\_data.assays.retrieve\_rna
+===================================
+
+.. currentmodule:: regbench_data.assays
+
+.. autofunction:: retrieve_rna

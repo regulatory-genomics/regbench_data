@@ -1,0 +1,6 @@
+regbench\_data.enhancer.ScreeningResult.sample\_name
+====================================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autoattribute:: ScreeningResult.sample_name

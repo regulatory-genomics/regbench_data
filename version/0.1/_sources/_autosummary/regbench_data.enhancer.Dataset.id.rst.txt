@@ -1,0 +1,6 @@
+regbench\_data.enhancer.Dataset.id
+==================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autoattribute:: Dataset.id

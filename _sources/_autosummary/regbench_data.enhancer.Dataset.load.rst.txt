@@ -1,0 +1,6 @@
+regbench\_data.enhancer.Dataset.load
+====================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. automethod:: Dataset.load

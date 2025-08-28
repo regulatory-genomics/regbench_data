@@ -1,0 +1,6 @@
+﻿regbench\_data.enhancer.concatenate
+===================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autofunction:: concatenate

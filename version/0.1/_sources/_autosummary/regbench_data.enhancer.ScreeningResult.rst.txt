@@ -1,0 +1,33 @@
+﻿regbench\_data.enhancer.ScreeningResult
+=======================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autoclass:: ScreeningResult
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree: .
+   
+      ~ScreeningResult.sample_term_id
+      ~ScreeningResult.sample_name
+      ~ScreeningResult.assembly
+      ~ScreeningResult.result
+   
+   
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree: .
+   
+      ~ScreeningResult.distance_to_tss
+      ~ScreeningResult.label_counts
+      ~ScreeningResult.load_osf
+   
+   

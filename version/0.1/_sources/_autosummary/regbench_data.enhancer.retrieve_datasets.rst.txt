@@ -1,0 +1,6 @@
+﻿regbench\_data.enhancer.retrieve\_datasets
+==========================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autofunction:: retrieve_datasets
