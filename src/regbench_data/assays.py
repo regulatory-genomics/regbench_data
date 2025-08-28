@@ -44,7 +44,7 @@ def retrieve_cage(
     return datasets
 
 RNA_DATA = {
-    'adipose_Subcutaneous': {
+    'adipose_subcutaneous': {
         'plus': 'total_RNA_seq_subcutaneous_adipose_tissue_+.w5z',
         'minus': 'total_RNA_seq_subcutaneous_adipose_tissue_-.w5z',
     }
@@ -76,7 +76,7 @@ def retrieve_rna(
     datasets = {}
     for dataset_id in id:
         if dataset_id not in RNA_DATA:
-            raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list()}")
+            raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list_rna()}")
         dataset = RNA_DATA[dataset_id]
         datasets[dataset_id] = (
             Path(POOCH.fetch(dataset['plus'], progressbar=True)),
