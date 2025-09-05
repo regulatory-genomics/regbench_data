@@ -31,7 +31,10 @@ def retrieve_eqtl(
             - phenotype_id: Phenotype ID, e.g., intron coordinates and cluster combined with gene ID for sQTLs
             - gene_name: GENCODE gene name
             - biotype: gene or transcript classification (protein coding, lncRNA, etc.)
-            - variant_id: variant ID in the format {chr}_{pos_first_ref_base}_{ref_seq}_{alt_seq}_b38
+            - var_chrom: chromosome of the variant
+            - var_pos: 0-based position of the variant
+            - var_ref: reference allele
+            - var_alt: alternate allele
             - pip: posterior inclusion probability (PIP)
             - af: allele frequency of the ALT allele (in-sample)
             - cs_id: credible set ID (number)
@@ -48,12 +51,31 @@ def retrieve_eqtl(
         if dataset_id not in EQTL_DATA:
             raise ValueError(f"Dataset ID {dataset_id} not found. Available datasets: {list_eqtl()}")
         data_file = POOCH.fetch(EQTL_DATA[dataset_id], progressbar=True)
-        datasets[dataset_id] = pl.read_parquet(data_file)
+        df = pl.read_parquet(data_file)
+        chrom = []
+        pos = []
+        ref = []
+        alt = []
+        for var in df['variant_id']:
+            parts = var.split('_')
+            chrom.append(parts[0])
+            pos.append(int(parts[1]) - 1)
+            ref.append(parts[2])
+            alt.append(parts[3])
+        df = df.with_columns([
+            pl.Series('var_chrom', chrom),
+            pl.Series('var_pos', pos),
+            pl.Series('var_ref', ref),
+            pl.Series('var_alt', alt),
+        ])
+        df = df.drop('variant_id')
+        datasets[dataset_id] = df
     return datasets
 
 if __name__ == "__main__":
     datasets = list_eqtl()
     print(datasets)
     datasets = list(retrieve_eqtl(datasets[0]).values())[0]
-    for gr in datasets.group_by('gene_name'):
-        print(gr)
+    print(datasets)
+    #for gr in datasets.group_by('gene_name'):
+    #    print(gr)
