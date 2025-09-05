@@ -31,16 +31,17 @@ def retrieve_eqtl(
             - phenotype_id: Phenotype ID, e.g., intron coordinates and cluster combined with gene ID for sQTLs
             - gene_name: GENCODE gene name
             - biotype: gene or transcript classification (protein coding, lncRNA, etc.)
-            - var_chrom: chromosome of the variant
-            - var_pos: 0-based position of the variant
-            - var_ref: reference allele
-            - var_alt: alternate allele
+            - variant_id: variant ID in the format "chr_pos_ref_alt_b38" (1-based position)
             - pip: posterior inclusion probability (PIP)
             - af: allele frequency of the ALT allele (in-sample)
             - cs_id: credible set ID (number)
             - cs_size: credible set size
             - afc: allelic fold change (aFC) of the lead variant (highest PIP) in the credible set
             - afc_se: standard error of the aFC of the lead variant (highest PIP) in the credible set
+            - var_chrom: chromosome of the variant
+            - var_pos: 0-based position of the variant
+            - var_ref: reference allele
+            - var_alt: alternate allele
     """
 
     if isinstance(id, str):
@@ -68,7 +69,6 @@ def retrieve_eqtl(
             pl.Series('var_ref', ref),
             pl.Series('var_alt', alt),
         ])
-        df = df.drop('variant_id')
         datasets[dataset_id] = df
     return datasets
 
