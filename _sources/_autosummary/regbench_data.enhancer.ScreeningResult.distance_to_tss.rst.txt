@@ -1,0 +1,6 @@
+regbench\_data.enhancer.ScreeningResult.distance\_to\_tss
+=========================================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. automethod:: ScreeningResult.distance_to_tss

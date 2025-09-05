@@ -1,0 +1,29 @@
+﻿regbench\_data.enhancer.Dataset
+===============================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autoclass:: Dataset
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree: .
+   
+      ~Dataset.id
+      ~Dataset.results
+   
+   
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree: .
+   
+      ~Dataset.from_osf
+   
+   

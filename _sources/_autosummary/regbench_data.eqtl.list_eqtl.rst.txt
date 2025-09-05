@@ -1,0 +1,6 @@
+﻿regbench\_data.eqtl.list\_eqtl
+==============================
+
+.. currentmodule:: regbench_data.eqtl
+
+.. autofunction:: list_eqtl

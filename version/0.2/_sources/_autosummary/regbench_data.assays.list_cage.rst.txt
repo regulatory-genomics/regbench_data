@@ -1,0 +1,6 @@
+﻿regbench\_data.assays.list\_cage
+================================
+
+.. currentmodule:: regbench_data.assays
+
+.. autofunction:: list_cage

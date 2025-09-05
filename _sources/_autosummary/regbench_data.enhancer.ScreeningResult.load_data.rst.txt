@@ -1,0 +1,6 @@
+regbench\_data.enhancer.ScreeningResult.load\_data
+==================================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. automethod:: ScreeningResult.load_data

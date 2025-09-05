@@ -1,0 +1,6 @@
+﻿regbench\_data.enhancer.Schraivogel2020
+=======================================
+
+.. currentmodule:: regbench_data.enhancer
+
+.. autofunction:: Schraivogel2020

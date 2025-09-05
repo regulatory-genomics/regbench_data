@@ -1,0 +1,6 @@
+﻿regbench\_data.eqtl.retrieve\_eqtl
+==================================
+
+.. currentmodule:: regbench_data.eqtl
+
+.. autofunction:: retrieve_eqtl
